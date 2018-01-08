@@ -13,7 +13,25 @@
 </head>
 
 <body>
-    <div id="map"></div>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-xs-4">
+                <form>
+                    <input id="search-field" type="search" class="form-control" placeholder="Filter List">
+                    <button id="filter-btn" class="btn btn-primary btn-block">Filter</button>
+                </form>
+                <table class="table" data-bind="foreach: places">
+                    <tr>
+                        <td>
+                            <button data-bind="text: name" class="btn btn-default btn-block">
+                            </button>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div class="col-xs-8" id="map"></div>
+        </div>
+    </div>
     <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAAZAmmv0XZ8_GeCyUVHJMzp_8l2bVTB8M&libraries=places&callback=initMap">
     </script>
     <script type='text/javascript' src="js\script.js"></script>
