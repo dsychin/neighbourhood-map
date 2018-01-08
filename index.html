@@ -10,25 +10,15 @@
     <link rel="stylesheet" href="css/bootstrap.min.css">
     <script type='text/javascript' src="js\jquery-3.2.1.min.js"></script>
     <script type='text/javascript' src="js\knockout-3.4.2.js"></script>
-    <script type='text/javascript' src="js\script.js"></script>
 </head>
 
 <body>
     <div id="map"></div>
-    <script>
-        var map;
-
-        function initMap() {
-            map = new google.maps.Map(document.getElementById('map'), {
-                center: {
-                    lat: 52.772099,
-                    lng: -1.206166
-                },
-                zoom: 15
-            });
-        }
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAAZAmmv0XZ8_GeCyUVHJMzp_8l2bVTB8M&libraries=places&callback=initMap">
     </script>
-    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAAZAmmv0XZ8_GeCyUVHJMzp_8l2bVTB8M&callback=initMap">
+    <script type='text/javascript' src="js\script.js"></script>
+    <script>
+        ko.applyBindings(viewModel)
     </script>
 </body>
 
