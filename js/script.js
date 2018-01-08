@@ -1,11 +1,6 @@
 var viewModel = {
-    locations: ko.observableArray([{
-            placeId: 'ChIJ4cpG9LrgeUgRnNCiZBYuFRg'
-        },
-        {
-            placeId: 'ChIJX2yJc7DgeUgR4RHis-kpEuo'
-        }
-    ]),
+    placeIds: ['ChIJ4cpG9LrgeUgRnNCiZBYuFRg', 'ChIJX2yJc7DgeUgR4RHis-kpEuo'],
+    places: ko.observableArray(),
     markers: []
 };
 
@@ -25,11 +20,12 @@ function initMap() {
 
     // For each location, find the place details from the place id and
     // make a marker.
-    for (var i = 0; i < viewModel.locations().length; i++) {
+    for (var i = 0; i < viewModel.placeIds.length; i++) {
         service.getDetails({
-            placeId: viewModel.locations()[i].placeId
+            placeId: viewModel.placeIds[i]
         }, function (place, status) {
             if (status === google.maps.places.PlacesServiceStatus.OK) {
+                viewModel.places.push(place);
                 createMarker(place, infowindow);
             } else {
                 alert('Error! Problem retrieving place details!');
