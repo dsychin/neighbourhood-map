@@ -38,10 +38,10 @@ var infowindow;
 function initMap() {
     map = new google.maps.Map(document.getElementById('map'), {
         center: {
-            lat: 52.772099,
-            lng: -1.206166
+            lat: 52.772,
+            lng: -1.207
         },
-        zoom: 15
+        zoom: 17
     });
 
     infowindow = new google.maps.InfoWindow();
