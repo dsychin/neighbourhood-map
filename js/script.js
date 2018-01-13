@@ -93,6 +93,7 @@ function populateInfoWindow(marker, infowindow, place) {
 
 }
 
+// Deletes all existing markers
 function deleteMarkers() {
     for (var i = 0; i < viewModel.markers.length; i++) {
         viewModel.markers[i].setMap(null);
