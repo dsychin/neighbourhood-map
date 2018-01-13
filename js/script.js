@@ -1,7 +1,24 @@
 var viewModel = {
-    placeIds: ['ChIJ4cpG9LrgeUgRnNCiZBYuFRg', 'ChIJX2yJc7DgeUgR4RHis-kpEuo'],
+    placeIds: [
+        'ChIJ4cpG9LrgeUgRnNCiZBYuFRg',
+        'ChIJX2yJc7DgeUgR4RHis-kpEuo',
+        'ChIJp-RvI7DgeUgRPCtD04s49Jc',
+        'ChIJ_b_l6bDgeUgRfFrMswMeYlo',
+        'ChIJtygHfLrgeUgRCkUy8cbb51A'
+    ],
     places: ko.observableArray(),
-    markers: []
+    staticPlaces: [],
+    markers: [],
+    search: ko.observable(''),
+    doSearch: function (value) {
+        viewModel.places.removeAll();
+        for (var i = 0; i < viewModel.staticPlaces.length; i++) {
+            if (viewModel.staticPlaces[i].name.toLowerCase()
+                .indexOf(value.toLowerCase()) >= 0) {
+                viewModel.places.push(viewModel.staticPlaces[i]);
+            }
+        }
+    }
 };
 
 var map;
@@ -19,13 +36,14 @@ function initMap() {
     var service = new google.maps.places.PlacesService(map);
 
     // For each location, find the place details from the place id and
-    // make a marker.
+    // make a marker
     for (var i = 0; i < viewModel.placeIds.length; i++) {
         service.getDetails({
             placeId: viewModel.placeIds[i]
         }, function (place, status) {
             if (status === google.maps.places.PlacesServiceStatus.OK) {
                 viewModel.places.push(place);
+                viewModel.staticPlaces.push(place);
                 createMarker(place, infowindow);
             } else {
                 alert('Error! Problem retrieving place details!');
@@ -55,4 +73,17 @@ function populateInfoWindow(marker, infowindow, place) {
         infowindow.open(map, marker);
     }
 
+}
+
+function fitToBounds() {
+    var bounds = new google.maps.LatLngBounds();
+    console.log(viewModel.markers.length);
+    for (var i = 0; i < viewModel.markers.length; i++) {
+        if (viewModel.markers[i].getVisible()) {
+            bounds.extend(viewModel.markers[i].getPosition());
+            console.log(viewModel.markers[i].getPosition());
+        }
+    }
+    console.log(bounds.isEmpty());
+    map.fitBounds(bounds);
 }
