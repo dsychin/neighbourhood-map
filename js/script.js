@@ -1,4 +1,5 @@
 var viewModel = {
+    // Google place ids of the locations
     placeIds: [
         'ChIJ4cpG9LrgeUgRnNCiZBYuFRg',
         'ChIJX2yJc7DgeUgR4RHis-kpEuo',
@@ -6,23 +7,34 @@ var viewModel = {
         'ChIJ_b_l6bDgeUgRfFrMswMeYlo',
         'ChIJtygHfLrgeUgRCkUy8cbb51A'
     ],
+    // List of places to be binded to the view and markers to be displayed
     places: ko.observableArray(),
+    // List of all places that will remain unchanged after initialisation
     staticPlaces: [],
+    // Array of google maps marker
     markers: [],
     search: ko.observable(''),
+    // This function checks with the staticPlaces array with the search value
+    // and add it to the observable array to be displayed
+    // and create the markers
     doSearch: function (value) {
         viewModel.places.removeAll();
+        deleteMarkers();
         for (var i = 0; i < viewModel.staticPlaces.length; i++) {
             if (viewModel.staticPlaces[i].name.toLowerCase()
                 .indexOf(value.toLowerCase()) >= 0) {
                 viewModel.places.push(viewModel.staticPlaces[i]);
+                createMarker(viewModel.staticPlaces[i], infowindow);
             }
         }
     }
 };
 
 var map;
+var infowindow;
 
+// Callback function for the Google Maps JS API to initialise the map,
+// get details of the place ids and make markers for them
 function initMap() {
     map = new google.maps.Map(document.getElementById('map'), {
         center: {
@@ -32,7 +44,7 @@ function initMap() {
         zoom: 15
     });
 
-    var infowindow = new google.maps.InfoWindow();
+    infowindow = new google.maps.InfoWindow();
     var service = new google.maps.places.PlacesService(map);
 
     // For each location, find the place details from the place id and
@@ -52,6 +64,8 @@ function initMap() {
     }
 }
 
+// This function takes the place object from the places api, and the infowindow
+// object to create a marker and an info window for it
 function createMarker(place, infowindow) {
     var marker = new google.maps.Marker({
         position: place.geometry.location,
@@ -65,6 +79,10 @@ function createMarker(place, infowindow) {
     })
 }
 
+// This function is used to populate the info window of a marker with
+// information
+// The arguments are the marker to add the info window, the info window object
+// and the place details for that marker
 function populateInfoWindow(marker, infowindow, place) {
     if (infowindow.marker != marker) {
         infowindow.marker = marker;
@@ -75,15 +93,9 @@ function populateInfoWindow(marker, infowindow, place) {
 
 }
 
-function fitToBounds() {
-    var bounds = new google.maps.LatLngBounds();
-    console.log(viewModel.markers.length);
+function deleteMarkers() {
     for (var i = 0; i < viewModel.markers.length; i++) {
-        if (viewModel.markers[i].getVisible()) {
-            bounds.extend(viewModel.markers[i].getPosition());
-            console.log(viewModel.markers[i].getPosition());
-        }
+        viewModel.markers[i].setMap(null);
     }
-    console.log(bounds.isEmpty());
-    map.fitBounds(bounds);
+    viewModel.markers = [];
 }
