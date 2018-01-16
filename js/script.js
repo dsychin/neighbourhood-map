@@ -62,6 +62,8 @@ function initMap() {
             }
         })
     }
+    // remove this after testing
+    getYelp();
 }
 
 // This function takes the place object from the places api, and the infowindow
@@ -102,18 +104,17 @@ function deleteMarkers() {
 }
 
 function getYelp() {
-    var key = '0ia_7CyE6X3prezuNUtB8YOJK8D9UdoXm1Y5BRg4IZKWjTrFkhDzGGzgAhsvqFv2fp8hZT5iJCBjwv0BwExz5gdq_q5OZTLkS0tzvL7YxcKVvjTiyfVLN0_Hm35aWnYx';
     $.ajax({
         url: 'https://api.yelp.com/v3/businesses/search',
-        headers: {
-            'Authorization': 'Bearer ' + key,
-            'Access-Control-Allow-Origin': '*'
+        beforeSend: function (xhr) {
+            xhr.setRequestHeader('Authorization', 'Bearer 0ia_7CyE6X3prezuNUtB8YOJK8D9UdoXm1Y5BRg4IZKWjTrFkhDzGGzgAhsvqFv2fp8hZT5iJCBjwv0BwExz5gdq_q5OZTLkS0tzvL7YxcKVvjTiyfVLN0_Hm35aWnYx');
+            xhr.setRequestHeader('Access-Control-Allow-Origin', '*');
         },
-        dataType: 'json',
+        //  dataType: 'json',
         data: {
             location: 'LE114QH'
         },
-        cache: true,
+        crossDomain: true,
         success: function (data, textStatus, jqXHR) {
             console.log(textStatus);
             console.log(data);
