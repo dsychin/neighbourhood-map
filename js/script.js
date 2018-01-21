@@ -56,6 +56,9 @@ function initMap() {
             if (status === google.maps.places.PlacesServiceStatus.OK) {
                 viewModel.places.push(place);
                 viewModel.staticPlaces.push(place);
+
+                searchFoursquare(place);
+
                 createMarker(place, infowindow);
             } else {
                 alert('Error! Problem retrieving place details!');
@@ -99,4 +102,80 @@ function deleteMarkers() {
         viewModel.markers[i].setMap(null);
     }
     viewModel.markers = [];
+}
+
+// Search for the locations based on name and lat lng then pass the result
+// to the getFoursquareVenue function
+function searchFoursquare(place) {
+    var urlSearch = 'https://api.foursquare.com/v2/venues/search';
+    var clientId = '2WWEAMHMYKZHXBSFSGYKJZG1XMJC5MJMB2R1KRU4WNDXRL3L';
+    var clientSecret = 'EFW23EHMB5WYDHS1ZSLQ32F51WJSXRHGWYTMPFKCBC5QOCXC';
+    var versionDate = '20180121';
+
+    $.ajax({
+        url: urlSearch,
+        dataType: 'json',
+        data: {
+            client_id: clientId,
+            client_secret: clientSecret,
+            ll: place.geometry.location.lat() + ',' +
+                place.geometry.location.lng(),
+            query: place.name,
+            v: versionDate,
+            limit: 1
+        },
+        success: function (data) {
+            if (data.response.venues.length > 0) {
+                getFoursquareVenue(data.response.venues[0].id);
+            }
+        },
+        error: function () {
+            //TODO
+        }
+    })
+}
+
+// Get the venue details from foursquare and update the view model
+function getFoursquareVenue(venueId) {
+    var urlDetails = 'https://api.foursquare.com/v2/venues/' + venueId;
+    var clientId = '2WWEAMHMYKZHXBSFSGYKJZG1XMJC5MJMB2R1KRU4WNDXRL3L';
+    var clientSecret = 'EFW23EHMB5WYDHS1ZSLQ32F51WJSXRHGWYTMPFKCBC5QOCXC';
+    var versionDate = '20180121';
+
+    $.ajax({
+        url: urlDetails,
+        dataType: 'json',
+        data: {
+            client_id: clientId,
+            client_secret: clientSecret,
+            v: versionDate
+        },
+        success: function (data) {
+            // Get the place object by comparing venue name
+            var oldPlace = $.grep(viewModel.places(), function (e) {
+                return e.name == data.response.venue.name;
+            })
+            // Checks if results exist
+            if (oldPlace.length > 0) {
+                // Copy the old array to a new array variable
+                var newPlace = $.extend(true, [], oldPlace);
+                // Add foursquare data to new array object
+                newPlace[0].foursquare = data.response.venue;
+                // Create a new array which contains the updated place info
+                var newArray = viewModel.staticPlaces.map(function (obj) {
+                    if (obj == oldPlace[0]) {
+                        return newPlace[0];
+                    } else {
+                        return obj;
+                    }
+                })
+                // Replace viewmodel with updated array
+                viewModel.staticPlaces = newArray;
+                viewModel.places(newArray);
+            }
+        },
+        error: function () {
+            //TODO
+        }
+    })
 }
