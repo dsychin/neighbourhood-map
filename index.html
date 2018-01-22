@@ -16,8 +16,12 @@
 <body>
     <div class="container-fluid">
         <div class="error" data-bind="text: error, visible: error"></div>
+        <div class="navbar">
+            <button class="btn btn-default" data-toggle="collapse" data-target="#sidebar">Collapse</button>
+            <span id="title">Neighbourhood Map</span>
+        </div>
         <div class="row">
-            <div class="col-xs-4">
+            <div class="col-xs-4 collapse in" id="sidebar">
                 <form>
                     <input id="search-field" type="search" class="form-control" placeholder="Filter List" data-bind="value: search, valueUpdate: 'keyup'"
                         autocomplete="off">
@@ -31,7 +35,7 @@
                     </tr>
                 </table>
             </div>
-            <div class="col-xs-8" id="map"></div>
+            <div id="map"></div>
         </div>
     </div>
     <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAHshp_qh1ufi6wnD8G3m8bBzAHFu6qL_k&libraries=places&callback=initMap">
