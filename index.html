@@ -14,6 +14,7 @@
 
 <body>
     <div class="container-fluid">
+        <div class="error" data-bind="text: error, visible: error"></div>
         <div class="row">
             <div class="col-xs-4">
                 <form>
@@ -23,7 +24,7 @@
                 <table class="table" data-bind="foreach: places">
                     <tr>
                         <td>
-                            <button data-bind="text: name" class="btn btn-default btn-block">
+                            <button data-bind="text: name, click: $parent.bounce" class="btn btn-default btn-block">
                             </button>
                         </td>
                     </tr>

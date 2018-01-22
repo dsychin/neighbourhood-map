@@ -1,4 +1,5 @@
 var viewModel = {
+    error: ko.observable(null),
     // Google place ids of the locations
     placeIds: [
         'ChIJ4cpG9LrgeUgRnNCiZBYuFRg',
@@ -24,14 +25,23 @@ var viewModel = {
             if (viewModel.staticPlaces[i].name.toLowerCase()
                 .indexOf(value.toLowerCase()) >= 0) {
                 viewModel.places.push(viewModel.staticPlaces[i]);
-                createMarker(viewModel.staticPlaces[i], infowindow);
+                createMarker(viewModel.staticPlaces[i]);
+            }
+        }
+    },
+    // Called when a user click on the list
+    bounce: function (place) {
+        for (var i = 0; i < viewModel.markers.length; i++) {
+            if (viewModel.markers[i].title == place.name) {
+                populateInfoWindow(viewModel.markers[i], place);
+                viewModel.markers[i].setAnimation(google.maps.Animation.BOUNCE);
+                stopBounceDelay(i);
             }
         }
     }
 };
 
 var map;
-var infowindow;
 
 // Callback function for the Google Maps JS API to initialise the map,
 // get details of the place ids and make markers for them
@@ -44,7 +54,6 @@ function initMap() {
         zoom: 17
     });
 
-    infowindow = new google.maps.InfoWindow();
     var service = new google.maps.places.PlacesService(map);
 
     // For each location, find the place details from the place id and
@@ -56,12 +65,9 @@ function initMap() {
             if (status === google.maps.places.PlacesServiceStatus.OK) {
                 viewModel.places.push(place);
                 viewModel.staticPlaces.push(place);
-
                 searchFoursquare(place);
-
-                createMarker(place, infowindow);
             } else {
-                alert('Error! Problem retrieving place details!');
+                viewModel.error('Error! Problem retrieving Google Maps place details!');
             }
         })
     }
@@ -69,7 +75,7 @@ function initMap() {
 
 // This function takes the place object from the places api, and the infowindow
 // object to create a marker and an info window for it
-function createMarker(place, infowindow) {
+function createMarker(place) {
     var marker = new google.maps.Marker({
         position: place.geometry.location,
         map: map,
@@ -78,7 +84,11 @@ function createMarker(place, infowindow) {
     viewModel.markers.push(marker);
 
     marker.addListener('click', function () {
-        populateInfoWindow(this, infowindow, place)
+        populateInfoWindow(this, place);
+        this.setAnimation(google.maps.Animation.BOUNCE);
+        setTimeout(function (marker) {
+            marker.setAnimation(null);
+        }, 1500, this);
     })
 }
 
@@ -86,10 +96,14 @@ function createMarker(place, infowindow) {
 // information
 // The arguments are the marker to add the info window, the info window object
 // and the place details for that marker
-function populateInfoWindow(marker, infowindow, place) {
+function populateInfoWindow(marker, place) {
+    var infowindow = new google.maps.InfoWindow();
     if (infowindow.marker != marker) {
         infowindow.marker = marker;
-        var content = '<strong>' + place.name + '</strong>';
+        var content = '<strong>' + place.name + '</strong><br>';
+        if (place.foursquare) {
+            content += 'Check ins: ' + place.foursquare.stats.checkinsCount;
+        }
         infowindow.setContent(content);
         infowindow.open(map, marker);
     }
@@ -126,17 +140,19 @@ function searchFoursquare(place) {
         },
         success: function (data) {
             if (data.response.venues.length > 0) {
-                getFoursquareVenue(data.response.venues[0].id);
+                getFoursquareVenue(data.response.venues[0].id, place);
+            } else {
+                createMarker(place);
             }
         },
         error: function () {
-            //TODO
+            viewModel.error('There was a problem reaching Foursquare!');
         }
     })
 }
 
 // Get the venue details from foursquare and update the view model
-function getFoursquareVenue(venueId) {
+function getFoursquareVenue(venueId, place) {
     var urlDetails = 'https://api.foursquare.com/v2/venues/' + venueId;
     var clientId = '2WWEAMHMYKZHXBSFSGYKJZG1XMJC5MJMB2R1KRU4WNDXRL3L';
     var clientSecret = 'EFW23EHMB5WYDHS1ZSLQ32F51WJSXRHGWYTMPFKCBC5QOCXC';
@@ -172,10 +188,21 @@ function getFoursquareVenue(venueId) {
                 // Replace viewmodel with updated array
                 viewModel.staticPlaces = newArray;
                 viewModel.places(newArray);
+
+                createMarker(newPlace[0]);
+            } else {
+                createMarker(place);
             }
         },
         error: function () {
-            //TODO
+            viewModel.error('There was a problem reaching Foursquare!');
         }
     })
+}
+
+// Stop the Google Maps marker bounce animation after a delay
+function stopBounceDelay(index) {
+    setTimeout(function () {
+        viewModel.markers[index].setAnimation(null);
+    }, 1500)
 }

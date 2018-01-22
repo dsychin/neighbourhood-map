@@ -14,3 +14,12 @@ body {
 .form-inline {
     box-sizing: border-box
 }
+
+.error {
+    font-size: 20px;
+    color: red;
+    background-color: grey;
+    width: 100%;
+    padding: 1rem;
+    text-align: center;
+}
