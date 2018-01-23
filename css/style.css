@@ -52,3 +52,7 @@ body {
     background-color: #673AB7;
     height: 50px;
 }
+
+#collapse-button {
+    margin-left: 20px;
+}
