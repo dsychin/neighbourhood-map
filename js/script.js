@@ -23,7 +23,7 @@ var viewModel = {
         deleteMarkers();
         for (var i = 0; i < viewModel.staticPlaces.length; i++) {
             if (viewModel.staticPlaces[i].name.toLowerCase()
-                .indexOf(value.toLowerCase()) >= 0 || value == '') {
+                .indexOf(value.toLowerCase()) >= 0 || value === '') {
                 viewModel.places.push(viewModel.staticPlaces[i]);
                 createMarker(viewModel.staticPlaces[i]);
             }
@@ -61,16 +61,19 @@ function initMap() {
     for (var i = 0; i < viewModel.placeIds.length; i++) {
         service.getDetails({
             placeId: viewModel.placeIds[i]
-        }, function (place, status) {
-            if (status === google.maps.places.PlacesServiceStatus.OK) {
-                viewModel.places.push(place);
-                viewModel.staticPlaces.push(place);
-                searchFoursquare(place);
-            } else {
-                viewModel.error('Error! Problem retrieving Google Maps place' +
-                    ' details!');
-            }
-        })
+        }, googleServiceCallback);
+    }
+}
+
+// Callback function for google places
+function googleServiceCallback(place, status) {
+    if (status === google.maps.places.PlacesServiceStatus.OK) {
+        viewModel.places.push(place);
+        viewModel.staticPlaces.push(place);
+        searchFoursquare(place);
+    } else {
+        viewModel.error('Error! Problem retrieving Google Maps place' +
+            ' details!');
     }
 }
 
@@ -90,7 +93,7 @@ function createMarker(place) {
         setTimeout(function (marker) {
             marker.setAnimation(null);
         }, 1500, this);
-    })
+    });
 }
 
 // This function is used to populate the info window of a marker with
@@ -164,7 +167,7 @@ function searchFoursquare(place) {
         error: function () {
             viewModel.error('There was a problem reaching Foursquare!');
         }
-    })
+    });
 }
 
 // Get the venue details from foursquare and update the view model
@@ -186,7 +189,7 @@ function getFoursquareVenue(venueId, place) {
             // Get the place object by comparing venue name
             var oldPlace = $.grep(viewModel.places(), function (e) {
                 return e.name == data.response.venue.name;
-            })
+            });
             // Checks if results exist
             if (oldPlace.length > 0) {
                 // Copy the old array to a new array variable
@@ -200,7 +203,7 @@ function getFoursquareVenue(venueId, place) {
                     } else {
                         return obj;
                     }
-                })
+                });
                 // Replace viewmodel with updated array
                 viewModel.staticPlaces = newArray;
                 viewModel.places(newArray);
@@ -213,12 +216,12 @@ function getFoursquareVenue(venueId, place) {
         error: function () {
             viewModel.error('There was a problem reaching Foursquare!');
         }
-    })
+    });
 }
 
 // Stop the Google Maps marker bounce animation after a delay
 function stopBounceDelay(index) {
     setTimeout(function () {
         viewModel.markers[index].setAnimation(null);
-    }, 1500)
+    }, 1500);
 }
