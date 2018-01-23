@@ -96,6 +96,10 @@ function createMarker(place) {
     });
 }
 
+function mapsError() {
+    viewModel.error('An error has occurred loading Google Maps!');
+}
+
 // This function is used to populate the info window of a marker with
 // information
 // The arguments are the marker to add the info window, the info window object

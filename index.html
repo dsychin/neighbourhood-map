@@ -46,7 +46,7 @@
         ko.applyBindings(viewModel)
         viewModel.search.subscribe(viewModel.doSearch);
     </script>
-    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAHshp_qh1ufi6wnD8G3m8bBzAHFu6qL_k&libraries=places&callback=initMap">
+    <script async defer onerror="mapsError()" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAHshp_qh1ufi6wnD8G3m8bBzAHFu6qL_k&libraries=places&callback=initMap">
     </script>
 </body>
 
