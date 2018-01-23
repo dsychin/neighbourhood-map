@@ -42,11 +42,11 @@
             <div id="map"></div>
         </div>
     </div>
-    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAHshp_qh1ufi6wnD8G3m8bBzAHFu6qL_k&libraries=places&callback=initMap">
-    </script>
     <script>
         ko.applyBindings(viewModel)
         viewModel.search.subscribe(viewModel.doSearch);
+    </script>
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAHshp_qh1ufi6wnD8G3m8bBzAHFu6qL_k&libraries=places&callback=initMap">
     </script>
 </body>
 
