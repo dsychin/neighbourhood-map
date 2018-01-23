@@ -19,11 +19,11 @@ var viewModel = {
     // and add it to the observable array to be displayed
     // and create the markers
     doSearch: function (value) {
-        viewModel.places.removeAll();
+        viewModel.places([]);
         deleteMarkers();
         for (var i = 0; i < viewModel.staticPlaces.length; i++) {
             if (viewModel.staticPlaces[i].name.toLowerCase()
-                .indexOf(value.toLowerCase()) >= 0) {
+                .indexOf(value.toLowerCase()) >= 0 || value == '') {
                 viewModel.places.push(viewModel.staticPlaces[i]);
                 createMarker(viewModel.staticPlaces[i]);
             }
