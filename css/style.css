@@ -1,8 +1,13 @@
 #map,
-.row,
-.container-fluid,
-.main {
+.container-fluid {
     height: 100%
+}
+
+.row {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    background-color: #03A9F4;
+    height: calc(100% - 50px);
 }
 
 #title {
@@ -15,10 +20,6 @@
 .container-fluid {
     margin: 0px !important;
     padding: 0px !important;
-}
-
-.row {
-    background-color: #03A9F4;
 }
 
 #sidebar {
@@ -49,4 +50,5 @@ body {
     padding-top: 5px;
     margin: 0 !important;
     background-color: #673AB7;
+    height: 50px;
 }
