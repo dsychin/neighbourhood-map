@@ -67,7 +67,8 @@ function initMap() {
                 viewModel.staticPlaces.push(place);
                 searchFoursquare(place);
             } else {
-                viewModel.error('Error! Problem retrieving Google Maps place details!');
+                viewModel.error('Error! Problem retrieving Google Maps place' +
+                    ' details!');
             }
         })
     }
@@ -100,9 +101,24 @@ function populateInfoWindow(marker, place) {
     var infowindow = new google.maps.InfoWindow();
     if (infowindow.marker != marker) {
         infowindow.marker = marker;
-        var content = '<strong>' + place.name + '</strong><br>';
+        var content = '';
+        content += '<img alt="icon" class="icon" src="' + place.icon + '">';
+        content += ' <strong>' + place.name + '</strong><br>';
+        content += '<em>' + place.vicinity + '<em><br>';
         if (place.foursquare) {
-            content += 'Check ins: ' + place.foursquare.stats.checkinsCount;
+            if (place.foursquare.price) {
+                content += 'Price: ' + place.foursquare.price.currency + '<br>';
+            }
+            content += 'Check ins: ' + place.foursquare.stats.checkinsCount +
+                '<br>';
+            content += '<a href="' + place.foursquare.canonicalUrl +
+                '" target="_blank">Foursquare</a><br>';
+        }
+        content += '<a href="' + place.url +
+            '" target="_blank">Google Maps</a><br>';
+        if (place.website) {
+            content += '<a href="' + place.website +
+                '" target="_blank">Website</a><br>';
         }
         infowindow.setContent(content);
         infowindow.open(map, marker);
