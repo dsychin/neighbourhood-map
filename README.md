@@ -5,7 +5,7 @@ map with a list of fixed locations that shows up as markers on the map. The
 locations can be filtered using the input on the sidebar. Clicking on a 
 location on the list or the map will show an info window on the place.
 
-A live demo of this project is available at: https://www.desmondchin.com/neighbourhood-map/
+A live demo of this project is available at: http://neighbourhood-map.desmondchin.com/
 
 ## Prerequisites
 - Modern web browser
